@@ -43,7 +43,7 @@
 \caption{Псевдокод реализации параллельного алгоритма обхода в ширину}
 \label{alg:bfs_example}
 \begin{lstlisting}[language=pseudoFSharp]
-def function BFS (parallelLevel, startingVertices, adjacencyMatrix):
+function BFS (parallelLevel, startingVertices, adjacencyMatrix):
 
     matrix := makeSparseMatrix from adjacencyMatrix
     
@@ -69,6 +69,7 @@ def function BFS (parallelLevel, startingVertices, adjacencyMatrix):
             call inner (newFrontier, newResult, newCounter)
 
     call inner (frontier, result, 1)
+end function
 \end{lstlisting}
 \end{algorithm}
 
