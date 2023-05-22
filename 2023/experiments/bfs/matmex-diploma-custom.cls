@@ -1,4 +1,4 @@
-%!TEX root = vkr.tex
+%!TEX root = artem-burashnikov_parallel_bfs_experiments.tex
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{matmex-diploma-custom}[2020/12/09 MatMex LaTeX diploma class]
 \def\my@fontsize{12pt}\def\my@baseclass{article}\def\my@title12pt{}\def\my@body14pt{}
