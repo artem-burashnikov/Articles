@@ -134,15 +134,15 @@ commentstyle=\scriptsize\rmfamily,
 basewidth={0.5em,0.5em},
 fontadjust=true,
 }
-\usepackage[kpsewhich,newfloat]{minted}
-\usemintedstyle{bw}
-\SetupFloatingEnvironment{listing}{name=Листинг}
-\SetupFloatingEnvironment{listing}{listname=Листинги}
-\captionsetup[listing]{
-  format=listing,
-  margin=0pt,
-  font={bf}
-}
+%\usepackage[kpsewhich,newfloat]{minted}
+%\usemintedstyle{bw}
+%\SetupFloatingEnvironment{listing}{name=Листинг}
+%\SetupFloatingEnvironment{listing}{listname=Листинги}
+%\captionsetup[listing]{
+%  format=listing,
+%  margin=0pt,
+%  font={bf}
+%}
 
 %% Текст
 \usepackage[inline]{enumitem} % Настройка списков, а так же "строчные" списки
