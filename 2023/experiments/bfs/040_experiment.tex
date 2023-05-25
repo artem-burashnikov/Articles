@@ -61,8 +61,17 @@ Total (MB): 9351
 
 
 \subsection{Инструменты для измерений}
-\noindent Все замеры выполнены с использованием библиотеки для измерения производительности \texttt{BenchmarkDotNet v0.13.4}\footnote{\href{https://benchmarkdotnet.org/}{Библиотека .NET для замеров производительности. Дата посещения: \DTMdate{2023-05-23}}}, разрабатываемой и поддерживаемой для платформы \texttt{.NET}.
-%TODO добавить параметры инструмента по умолчанию
+\noindent Все замеры выполнены с использованием библиотеки для измерения производительности \texttt{BenchmarkDotNet v0.13.4}\footnote{\href{https://benchmarkdotnet.org/}{Библиотека .NET для замеров производительности. Дата посещения: \DTMdate{2023-05-23}}}, разрабатываемой и поддерживаемой для платформы \texttt{.NET}. Ниже приведены настрйки инструмента (для экспериментов использованы настройки по умолчанию).
+\begin{itemize}[label=--]
+ 	%\renewcommand{\labelitemi}{\--}
+    \item{\textbf{launchCount}} - общее количество запусков конкретного тестового метода. По умолчанию 1.
+    \item{\textbf{warmupCount}} - количество итераций стадии разгорева. По умолчанию рассчитывается эвристикой.
+    \item{\textbf{iterationTime}} - желаемое время исполнения итерации. По умолчанию 500 мс.
+    \item{\textbf{iterationCount}} - количество итераций для тестового метода. По умолчанию рассчитывается эвристикой.
+    \item{\textbf{invocationCount}} - количество вызовов метода за одну итерацию. По умолчанию рассчитывается эвристикой.
+    \item{\textbf{unrollFactor}} - сколько раз тестовый метод будет вызван за одну итерации в рамках одного тестового цикла. По умолчанию 16.
+    \item{\textbf{runOncePerIteration}} - флаг, отвечающий за запуск тестового метода ровно один раз за итерацию. По умолчанию \textit{False}.
+\end{itemize}
 
 
 
@@ -185,9 +194,10 @@ mycielskian12                  &      3,071       &      203,600      & 4.3 \\
 \texttt{stats.normaltest()} проверено соответствие полученных величин нормальному распределению. Значение \texttt{pvalue} соответствовало $0.15$ (Шапиро) и $0.13$ (Пирсон), что удовлетворяет критерию нормальности.
 По данным в таблице~\ref{measured_time} построена гистограмма~\ref{histogram}. Вид гистограммы соответствует нормальному распределению.
 
+
 \begin{figure}[ht]
   \centering
-\includesvg[width=\textwidth]{histogram}
+\includesvg[width=0.6\textwidth]{histogram}
 \caption{Гистограмма распределения значений, полученных при проведении проверки инструмента \texttt{BenchmarkDotNet}}
 \label{histogram}
 \end{figure}
@@ -207,14 +217,14 @@ mycielskian12                  &      3,071       &      203,600      & 4.3 \\
 
 \begin{table}
   \centering
-\includesvg[width=\textwidth]{figures/10-50-sparse-speedup}
+\includesvg[width=0.6\textwidth]{figures/10-50-sparse-speedup}
 \caption{Ускорение параллельной версии BFS относительно последовательной для разреженных графов с количеством вершин в диапазоне 10 --- 50 из доступного набора графов}
 \label{results1}
 \end{table}
 
 \begin{table}
   \centering
-\includesvg[width=\textwidth]{figures/60-100-sparse-speedup}
+\includesvg[width=0.6\textwidth]{figures/60-100-sparse-speedup}
 \caption{Ускорение параллельной версии BFS относительно последовательной для разреженных графов с количеством вершин в диапазоне 60 --- 100 из доступного набора графов}
 \label{results2}
 \end{table}
@@ -227,14 +237,14 @@ mycielskian12                  &      3,071       &      203,600      & 4.3 \\
 
 \begin{table}
   \centering
-\includesvg[width=\textwidth]{figures/165-846-sparse-speedup}
+\includesvg[width=0.6\textwidth]{figures/165-846-sparse-speedup}
 \caption{Ускорение параллельной версии BFS относительно последовательной для разреженных графов с количеством вершин в диапазоне 165 --- 846 из доступного набора}
 \label{results3}
 \end{table}
 
 \begin{table}
   \centering
-\includesvg[width=\textwidth]{figures/1000-3071-sparse-speedup}
+\includesvg[width=0.6\textwidth]{figures/1000-3071-sparse-speedup}
 \caption{Ускорение параллельной версии BFS относительно последовательной для разреженных графов с количеством вершин в диапазоне 1000 --- 3071 из доступного набора}
 \label{results4}
 \end{table}
@@ -243,7 +253,7 @@ mycielskian12                  &      3,071       &      203,600      & 4.3 \\
 
 \begin{table}
   \centering
-\includesvg[width=\textwidth]{figures/100-70-density-07}
+\includesvg[width=0.6\textwidth]{figures/100-70-density-07}
 \caption{Ускорение параллельной версии BFS относительно последовательной графов плотности 0.7 с количеством вершин 70, 80, 90, 100}
 \label{results5}
 \end{table}
@@ -252,7 +262,7 @@ mycielskian12                  &      3,071       &      203,600      & 4.3 \\
 
 \begin{table}
   \centering
-\includesvg[width=\textwidth]{figures/80-70-density-06}
+\includesvg[width=0.6\textwidth]{figures/80-70-density-06}
 \caption{Ускорение параллельной версии BFS относительно последовательной для графов плотности 0.6 с количеством вершин 70, 80}
 \label{results6}
 \end{table}
