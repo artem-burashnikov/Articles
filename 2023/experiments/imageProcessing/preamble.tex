@@ -1,0 +1,126 @@
+% !TeX spellcheck = ru_RU
+% !TEX root = artem-burashnikov_parallel_bfs_experiments.tex
+% Опциональные добавления используемых пакетов. Вполне может быть, что они вам не понадобятся, но в шаблоне приведены примеры их использования.
+\usepackage{tikz} % Мощный пакет для создание рисунков, однако может очень сильно замедлять компиляцию
+\usetikzlibrary{decorations.pathreplacing,calc,shapes,positioning,tikzmark}
+
+% Библиотека для TikZ, которая генерирует отдельные файлы для каждого рисунка
+% Позволяет ускорить компиляцию, однако имеет свои ограничения
+% Например, ломает пример выделения кода в листинге из шаблона
+% \usetikzlibrary{external}
+% \tikzexternalize[prefix=figures/]
+
+\newcounter{tmkcount}
+
+\tikzset{
+  use tikzmark/.style={
+    remember picture,
+    overlay,
+    execute at end picture={
+      \stepcounter{tmkcount}
+    },
+  },
+  tikzmark suffix={-\thetmkcount}
+}
+
+\usepackage{booktabs} % Пакет для верстки "более книжных" таблиц, вполне годится для оформления результатов
+% В шаблоне есть команда \multirowcell, которой нужен этот пакет.
+\usepackage{multirow}
+\usepackage{siunitx} % для таблиц с единицами измерений
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage{url}
+
+\newcommand{\cd}[1]{\texttt{#1}}
+\newcommand{\inbr}[1]{\left<#1\right>}
+
+% Для названий стоит использовать \textsc{}
+\newcommand{\OCaml}{\textsc{OCaml}}
+\newcommand{\miniKanren}{\textsc{miniKanren}}
+\newcommand{\BibTeX}{\textsc{BibTeX}}
+\newcommand{\vsharp}{\textsc{V$\sharp$}}
+\newcommand{\fsharp}{\texttt{F\#}}
+\newcommand{\csharp}{\textsc{C$\sharp$}}
+\newcommand{\GitHub}{\textsc{GitHub}}
+\newcommand{\SMT}{\textsc{SMT}}
+
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+%\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+%  Команды и пакеты, не используемые в шаблоне, которые тем не менее могут быть полезными.
+
+% \newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+% \usepackage{mathrsfs}
+
+%\lstdefinelanguage{ocaml}{
+%    keywords={@type, function, fun, let, in, match, with, when, class, type,
+%    nonrec, object, method, of, rec, repeat, until, while, not, do, done, as, val, inherit, and,
+%    new, module, sig, deriving, datatype, struct, if, then, else, open, private, virtual, include, success, failure,
+%    lazy, assert, true, false, end},
+%    sensitive=true,
+%    commentstyle=\small\itshape\ttfamily,
+%    keywordstyle=\ttfamily\bfseries, %\underbar,
+%    identifierstyle=\ttfamily,
+%    basewidth={0.5em,0.5em},
+%    columns=fixed,
+%    fontadjust=true,
+%    literate={->}{{$\to$}}3 {===}{{$\equiv$}}1 {=/=}{{$\not\equiv$}}1 
+%    {|>}{{$\triangleright$}}3 {\\/}{{$\vee$}}2 
+%    {/\\}{{$\wedge$}}2 {>=}{{$\ge$}}1 {<=}{{$\le$}} 1,
+%    morecomment=[s]{(*}{*)}
+%}
+
+\usepackage{upquote}
+
+\usepackage{color}
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+
+\lstdefinelanguage{pseudoFSharp}%
+    {morekeywords={let, new, match, with,, open, module, namespace, type, of, member, % 
+    and, for, while, true, false, in, do, begin, end, fun, function, return, yield, try, %
+    mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit, finally },
+    otherkeywords={ let!, return!, do!, yield!, use!, var, from, select, where, call, by },
+    keywordstyle=\color{redstrings},
+    sensitive=true,
+    tabsize=2,
+    comment=[l][\color{greencomments}]{//}
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{1.0,1.0,1.0}
+
+\lstdefinestyle{codelistingstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\small\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    commentstyle=\color{codegreen}
+}
+
+\let\sq=\textquotesingle
+
+\usepackage{hyperref}
+\usepackage{qtree}
+\usepackage{svg}
+\usepackage{booktabs}
+
+\captionsetup[figure]{font=small,labelfont=small}
+\captionsetup[table]{font=small,labelfont=small}
