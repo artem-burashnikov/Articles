@@ -1,4 +1,4 @@
-NAME ?= artem-burashnikov_parallel_bfs_experiments
+NAME ?= burashnikov_bfs
 ENGINE ?= lualatex # Only `xelatex` or `lualatex` are allowed here
 
 .PHONY: $(NAME).pdf clean dist-clean format depext depext-deb
