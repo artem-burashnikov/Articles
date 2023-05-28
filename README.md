@@ -28,7 +28,7 @@ By defualt, the document will be compiled using LuaLateX engine.
 
 `make` can also be used with `clean` и `dist-clean` optional arguments.
 
-`clean` deletes tempory files, `dist-clean` will also clean an output pdf.
+`clean` deletes temporary files, `dist-clean` will also clean an output pdf.
 
 
 ### Additional notes
