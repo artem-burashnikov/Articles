@@ -1,13 +1,13 @@
 # Programming and Experiments Repository
 
-This repository is a collection of articles and experiments in various programming languages and related subjects.
+This repository is a collection of articles, research papers and experiments in various programming languages and related subjects.
 
 ## Getting Started
 
 To explore the content in this repository, clone it to your local machine:
 
 ```bash
-git clone https://github.com/your-username/programming-experiments.git
+git clone https://github.com/artem-burashnikov/articles.git
 ```
 
 ## How to use
