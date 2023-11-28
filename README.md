@@ -1,6 +1,6 @@
 # Programming and Experiments Repository
 
-This repository is a collection of articles, research papers and experiments in various programming languages and related subjects.
+This repository is a collection of articles, research papers and experiments.
 
 ## Getting Started
 
