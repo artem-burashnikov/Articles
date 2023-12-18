@@ -1,6 +1,6 @@
-# Programming and Experiments Repository
+# Academic projects and reports
 
-This repository is a collection of articles, research papers and experiments.
+This repository is a collection of articles, research projects, experiments, academic papers and presentations.
 
 ## Getting Started
 
@@ -12,10 +12,16 @@ git clone https://github.com/artem-burashnikov/articles.git
 
 ## How to use
 
-* Recommended method: online tools such as [Overleaf](https://www.overleaf.com/) or [Papeeria](https://papeeria.com/)
-* Upload the template files to your project, preserving the folder structure.
-Choose XeTeX (or LuaTeX) as the compiler (for example, in Overleaf, go to Menu -> Compiler).
-* Alternative method: install TeX locally on your machine (for example, [TeXLive](https://www.tug.org/texlive/))
+* **Recommended method**
+
+    Online tools such as [Overleaf](https://www.overleaf.com/) or [Papeeria](https://papeeria.com/).
+
+    Upload the files, preserving the folder structure.
+    Choose XeTeX (or LuaTeX) as the compiler (for example, in Overleaf, go to Menu -> Compiler).
+
+* **Alternative method**
+
+    Install TeX distribution locally on your machine (for example, [TeXLive](https://www.tug.org/texlive/)) plus an editor (for example [VSC](https://code.visualstudio.com/).
 
 
 ## Building
@@ -38,4 +44,3 @@ make
     ```sh
     bibtex "\" can't start a style-file command- ...
     ```
-
