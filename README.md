@@ -24,7 +24,6 @@ If you are using a local TeX compiler, then simply navigate to a folder and use 
 ```sh
 make
 ```
-By default, the document will be compiled using LuaLateX engine.
 
 `make` can also be used with `clean` и `dist-clean` optional arguments.
 
