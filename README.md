@@ -21,7 +21,7 @@ git clone https://github.com/artem-burashnikov/articles.git
 
 * **Alternative method**
 
-    Install TeX distribution locally on your machine (for example, [TeXLive](https://www.tug.org/texlive/)) plus an editor (for example [VSC](https://code.visualstudio.com/).
+    Install TeX distribution locally on your machine (for example, [TeXLive](https://www.tug.org/texlive/)) plus an editor (for example [VSC](https://code.visualstudio.com/)).
 
 
 ## Building
