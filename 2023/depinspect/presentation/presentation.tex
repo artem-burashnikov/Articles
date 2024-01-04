@@ -53,7 +53,7 @@
 	\begin{itemize}
 		\item Вокруг каждого семейства дистрибутивов GNU/Linux своя экосистема
 		\item Для установки программ используются пакеты, чьи форматы не унифицированы
-		\item Хотим анализировать метаданные пакетов в контексте архитектуры \texttt{RISC-V} -- может быть полезно как для бизнеса, так и для разработчиков
+		\item Хотим анализировать метаданные пакетов в контексте архитектуры \texttt{RISC-V} --- может быть полезно как для бизнеса, так и для разработчиков
 		\item Междистрибутивный и межархитектурный анализ --- проблема
 	\end{itemize}
 \end{frame}
@@ -181,15 +181,15 @@
 
 %% Совместить два слайду внизу в один!
 %
-\begin{frame}[fragile]
-	\frametitle{Реализация --- базы данных}
-	Приложение хранит метаданные в базах данных \texttt{SQLite}
-	\begin{itemize}
-		\item Упростило процесс внедерения метаданных \texttt{Fedora}
-		\item Позволило переиспользовать метаданные, храня их на диске
-		\item Позволило реализовать создание нетривиальных запросов с помощью \texttt{SQL}
-	\end{itemize}
-\end{frame}
+% \begin{frame}[fragile]
+% 	\frametitle{Реализация --- базы данных}
+% 	Приложение хранит метаданные в базах данных \texttt{SQLite}
+% 	\begin{itemize}
+% 		\item Упростило процесс внедерения метаданных \texttt{Fedora}
+% 		\item Позволило переиспользовать метаданные, храня их на диске
+% 		\item Позволило реализовать создание нетривиальных запросов с помощью \texttt{SQL}
+% 	\end{itemize}
+% \end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Реализация --- базы данных}
@@ -197,6 +197,12 @@
 		\centering
 		\includesvg[width=\textwidth]{pictures/bd-schema}
 	\end{figure}
+
+	\begin{itemize}
+		% \item Упростило процесс внедерения метаданных \texttt{Fedora}
+		\item Позволило переиспользовать метаданные, храня их на диске
+		\item Позволило реализовать создание нетривиальных запросов с помощью \texttt{SQL}
+	\end{itemize}
 \end{frame}
 %
 
@@ -213,6 +219,14 @@
 		\centering
 		\includesvg[width=0.8\textwidth]{pictures/cli}
 		\label{cli}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Пример использования}
+	\begin{figure}[ht]
+		\raggedright
+		\includesvg[width=0.55\textwidth]{pictures/result}
 	\end{figure}
 \end{frame}
 
@@ -247,21 +261,27 @@
 % 	Близко к архитектурному стилю \enquote{Каналы и Фильтры}
 % \end{frame}
 
+% \begin{frame}[t]
+% 	\frametitle{Реализация --- ETL}
+% 	Во время поступления команды от пользователя заранее неизвестно, какой порядок действий нужно совершить:
+% 	\begin{itemize}
+% 		\item Для инициализации метаданных \texttt{Ubuntu} нужно выполнить целую цепочку (загрузить архивы, произвести парсинг текста, создать и наполнить базу данных)
+% 		\item Для \texttt{Fedora} --- загрузить и распаковать файлы \texttt{.sqlite}.
+% 	\end{itemize}
+% \end{frame}
+
 \begin{frame}[t]
 	\frametitle{Реализация --- ETL}
-	\textbf{Проблема} --- во время поступления команды от пользователя заранее неизвестно, какой порядок действий нужно совершить:
+	% Во время поступления команды от пользователя заранее неизвестно, какой порядок действий нужно совершить:
 	\begin{itemize}
 		\item Для инициализации метаданных \texttt{Ubuntu} нужно выполнить целую цепочку (загрузить архивы, произвести парсинг текста, создать и наполнить базу данных)
 		\item Для \texttt{Fedora} --- загрузить и распаковать файлы \texttt{.sqlite}.
 	\end{itemize}
-\end{frame}
 
-\begin{frame}[t]
-	\frametitle{Реализация --- ETL}
-	\textbf{Решение} --- каждый класс знает, что с собой нужно делать
+	% Таким образом:
 	\begin{itemize}
 		\item Создан метакласс \textbf{Package}, имеющий набор полей, соответствующих именам полей метаданных, и декларирующий абстрактные статические методы, сопоставляемые консольным командам
-		\item Дочерние классы \textbf{Ubuntu} и \textbf{Fedora} реализуют эти статические методы по-своему
+		\item Дочерние классы \texttt{Ubuntu} и \texttt{Fedora} реализуют эти статические методы по-своему
 	\end{itemize}
 \end{frame}
 
@@ -269,20 +289,20 @@
 	\frametitle{Результаты}
 	\begin{itemize}
 		\item Проведён обзор четырех инструментов, способных работать с метаданными пакетов, на основе анализа функциональности которых созданы четыре доступные для конечного пользователя команды приложения
-		\item Внедрены метаданные пакетов \texttt{Ubuntu} и \texttt{Fedora}
-		\item На языке \texttt{Python} реализовано приложение\footnote{Репозиторий приложения, \href{https://github.com/artem-burashnikov/depinspect}{https://github.com/artem-burashnikov/depinspect}} с модульной архитекторой и консольным интерфейсом, позволяющее производить межархитектурный анализ зависимостей пакетов
+		\item Произведен анализ форматов метаданных и внедрены метаданные пакетов \texttt{Ubuntu} (6130 пакетов) и \texttt{Fedora} (65290 пакетов)
+		\item На языке \texttt{Python} реализовано приложение\footnote{Репозиторий приложения: \href{https://github.com/artem-burashnikov/depinspect}{https://github.com/artem-burashnikov/depinspect}} с модульной архитекторой и консольным интерфейсом, включающее два дистрибутива и позволяющее производить межархитектурный анализ зависимостей пакетов
 	\end{itemize}
 \end{frame}
 
 %\addtocounter{framenumber}{1}
-\appendix
+% \appendix
 
-\begin{frame}
-	\frametitle{Пример использования}
-	\begin{figure}[ht]
-		\raggedright
-		\includesvg[width=0.55\textwidth]{pictures/result}
-	\end{figure}
-\end{frame}
+% \begin{frame}
+% 	\frametitle{Пример использования}
+% 	\begin{figure}[ht]
+% 		\raggedright
+% 		\includesvg[width=0.55\textwidth]{pictures/result}
+% 	\end{figure}
+% \end{frame}
 
 \end{document}
