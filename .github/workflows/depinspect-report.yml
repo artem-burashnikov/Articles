@@ -1,4 +1,4 @@
-name: Build depinspect presentation
+name: Build depinspect report
 on: [push]
 jobs:
   build_latex:
@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - run: |
-          cd 2023/depinspect/presentation
+          cd 2023/depinspect/report
           sudo apt-get update
           sudo apt install inkscape
           make depext-deb
@@ -22,7 +22,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: 2023/depinspect/presentation/presentation.pdf
+          path: 2023/depinspect/report/burashnikov_depinspect.pdf
 
       # - name: example-class-relations--svg
       #   uses: dante-ev/latex-action@latest
