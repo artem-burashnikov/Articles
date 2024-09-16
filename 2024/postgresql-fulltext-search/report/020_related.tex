@@ -1,0 +1,368 @@
+% !TeX spellcheck = ru_RU
+% !TEX root = vkr.tex
+
+\section{Поиск в текстовых данных}
+
+В данном разделе представлена информация об особенностях поиска по текстовым данным.
+Преимущества полнотекстового поиска как отдельного инструмента в PostgreSQL. Его возможности и ограничения.
+
+\subsection{Поиск по шаблонам}
+
+Возникает вопрос, зачем использовать специальные инструменты, если для поиска по текстовым типам данных в PostgreSQL существуют операторы \texttt{LIKE}, \texttt{ILIKE}, \texttt{SIMILAR TO} и регулярные выражения?
+Дело в том, что эти операторы не удовлетворяют требованиям, выдвигаемым современными информационными системами.
+
+\begin{itemize}
+    \item Нет поддержки лингвистической функциональности. Например, не рассчитаны на работу со словоформами.
+    \item Не позволяют ранжировать результаты поиска.
+    \item Из-за отсутствия индексов работа с такими операторами обычно выполняется медленно.
+\end{itemize}
+
+Таким образом, необходимы специальные методы, не имеющие перечисленных недостатков.
+
+\subsection{Полнотекстовый поиск (FTS)}
+
+Полнотекстовый поиск (\textit{FTS}) --- это поиск \textit{документов}, удовлетворяющих запросу, и, возможно, сортировка результатов в определенном порядке.
+Наиболее распространенный случай --- найти документы, содержащие все термины запроса, и вернуть их в порядке сходства слов.
+Понятия \enquote{запроса} и \enquote{сходства} зависят от конкретных приложений.
+
+Результатом FTS является \textit{документ} или \textit{документы}.
+В контексте СУБД документ --- это обычно содержимое текстового поля в строке таблицы или объединение таких полей, которые могут храниться в разных таблицах или формироваться динамически.
+Документы проходят предварительную обработку на этапе индексации. Она включает в себя следующее.
+
+\begin{itemize}
+    \item{\textbf{Разбор на токены}} \\
+          Текст разбивается на фрагменты, например, слова, отделенные пробелом. Также полезно различать классы токенов, поскольку они могут обрабатываться по-разному.
+          Не имеет смысла пытаться нормализовать адрес электронной почты с помощью морфологического словаря, но может быть разумно выделить доменное имя и иметь возможность поиска по нему.
+    \item{\textbf{Нормализация}} \\
+          Применение лингвистических правил для приведения фрагментов к их инфинитивной форме --- \textit{лексемам}.
+    \item{\textbf{Хранение обработанных документов в форме, оптимальной для поиска}} \\
+          Например, в виде отсортированного массива лексем.
+          Вместе с самими лексемами желательно хранить информацию об их позиции в тексте.
+\end{itemize}
+
+\subsection{FTS в PostgreSQL}
+
+В данном разделе будут представлены особенности и компоненты системы полнотекстового поиска в СУБД PostgreSQL.
+
+\subsubsection{История создания}
+Согласно ведущим разработчикам Олегу Бартунову и Теодору Сигаеву, полнотекстовый поиск стал доступен как встроенное решение с версии 8.3~\cite{bartunov2001full}, ставшей доступной в $2008$ году.
+Далее представлена краткая историческая справка.
+
+\begin{enumerate}
+    \item Разработка началась в 2000 году после осознания того, что требуется поисковая система, оптимизированная для сервисов с обновляемыми в реальном режиме текстовыми данными (например, новостные порталы).
+    \item \enquote{Инкрементное обновление инвертированного индекса --- сложная инженерная задача}, --- пишут авторы, \enquote{а нам нужно было что-то легкое, бесплатное и с возможностью доступа к метаданным из базы данных}.
+          Так начинается работа над новой поисковой системой.
+    \item Эта система получает название \texttt{tsearch}.
+    \item Для индексирования применяются RD-деревья (англ. --- Russian Doll Tree, \enquote{Матрешка}).
+    \item Начиная с $2003$ года, ведется работа над улучшенной версией \texttt{tsearch v2}.
+    \item Появляется поддержка пользовательских конфигураций и словарей.
+    \item В $2008$ выходит PostgreSQL версии $8.3$ со встроенным в нее улучшенным модулем \texttt{tsearch2}.
+\end{enumerate}
+
+На момент написания этой работы текущей стабильной версией PostgreSQL является версия $16.4$.
+В ней доступны конфигурации для 29 языков, представленных в таблице~\ref{standard-cfg}.
+При этом доступна возможность расширения стандартной конфигурации пользовательскими словарями и парсерами.
+
+\begin{longtable}{|l|l|l|}
+    \hline
+    \textbf{Schema}    & \textbf{Name}    & \textbf{Description}     \\ \hline
+    pg\_catalog & arabic     & configuration for arabic language     \\ \hline
+    pg\_catalog & armenian   & configuration for armenian language   \\ \hline
+    pg\_catalog & basque     & configuration for basque language     \\ \hline
+    pg\_catalog & catalan    & configuration for catalan language    \\ \hline
+    pg\_catalog & danish     & configuration for danish language     \\ \hline
+    pg\_catalog & dutch      & configuration for dutch language      \\ \hline
+    pg\_catalog & english    & configuration for english language    \\ \hline
+    pg\_catalog & finnish    & configuration for finnish language    \\ \hline
+    pg\_catalog & french     & configuration for french language     \\ \hline
+    pg\_catalog & german     & configuration for german language     \\ \hline
+    pg\_catalog & greek      & configuration for greek language      \\ \hline
+    pg\_catalog & hindi      & configuration for hindi language      \\ \hline
+    pg\_catalog & hungarian  & configuration for hungarian language  \\ \hline
+    pg\_catalog & indonesian & configuration for indonesian language \\ \hline
+    pg\_catalog & irish      & configuration for irish language      \\ \hline
+    pg\_catalog & italian    & configuration for italian language    \\ \hline
+    pg\_catalog & lithuanian & configuration for lithuanian language \\ \hline
+    pg\_catalog & nepali     & configuration for nepali language     \\ \hline
+    pg\_catalog & norwegian  & configuration for norwegian language  \\ \hline
+    pg\_catalog & portuguese & configuration for portuguese language \\ \hline
+    pg\_catalog & romanian   & configuration for romanian language   \\ \hline
+    pg\_catalog & russian    & configuration for russian language    \\ \hline
+    pg\_catalog & serbian    & configuration for serbian language    \\ \hline
+    pg\_catalog & simple     & simple configuration                  \\ \hline
+    pg\_catalog & spanish    & configuration for spanish language    \\ \hline
+    pg\_catalog & swedish    & configuration for swedish language    \\ \hline
+    pg\_catalog & tamil      & configuration for tamil language      \\ \hline
+    pg\_catalog & turkish    & configuration for turkish language    \\ \hline
+    pg\_catalog & yiddish    & configuration for yiddish language    \\ \hline
+    \caption{Встроенные конфигурации}
+    \label{standard-cfg}
+\end{longtable}
+
+\subsubsection{Терминология}
+
+В контексте PostgreSQL~\cite{PostgresDocs}, говоря о полнотекстовом поиске, оперируют следующими терминами:
+
+\begin{itemize}
+    \item{\textbf{tsvector}} --- тип данных для представления обработанных документов;
+    \item{\textbf{tsquery}} --- тип данных для представления обработанных запросов;
+    \item{\textbf{@@}} --- оператор, проверяющий документ типа tsvector, на соответствие критерию типа tsquery: tsvector @@ tsquery;
+    \item{\textbf{index}}:
+          \begin{itemize}
+              \item GiST (англ. --- \textit{Generalized Search Tree Index});
+              \item GIN (англ. --- \textit{Generalized Inverted Index});
+              \item RUM (улучшенный GIN);
+          \end{itemize}
+    \item{\textbf{dictionary}} --- программа, благодаря которой можно управлять нормализацией фрагментов, определять стоп-слова, которые не будут индексированы, синонимы, словосочетания и др.;
+    \item{\textbf{configuration}} --- конфигурация текстового поиска (анализатор и набор словарей).
+\end{itemize}
+
+\noindent Словари и конфигурации представляют собой \enquote{наборы параметров, связывающие анализаторы и шаблоны, их можно создавать, не имея административных прав}.
+
+\subsubsection{Токенизация}
+
+Предварительная обработка текста начинается с разбиения его на фрагменты --- \textit{токены}.
+Чтобы посмотреть на то, какие токены могут быть распознаны стандартным парсером, нужно выполнить команду, представленную в листинге~\ref{tokenization}.
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Команда для просмотра классов токенов, которые могут быть распознаны парсером}
+    \label{tokenization}
+    \begin{lstlisting}[style=codelistingstyle]
+        SELECT * FROM ts_token_type('default');
+    \end{lstlisting}
+\end{algorithm}
+
+\noindent Результат выполнения запроса представлен в таблице~\ref{standard-token-types}.
+
+\begin{longtable}{|c|c|l|}
+    \hline
+    \textbf{tokid} & \textbf{alias} & \textbf{description} \\ \hline
+    1  & asciiword        & Word, all ASCII                       \\ \hline
+    2  & word             & Word, all letters                     \\ \hline
+    3  & numword          & Word, letters and digits              \\ \hline
+    4  & email            & Email address                         \\ \hline
+    5  & url              & URL                                   \\ \hline
+    6  & host             & Host                                  \\ \hline
+    7  & sfloat           & Scientific notation                   \\ \hline
+    8  & version          & Version number                        \\ \hline
+    9  & hword\_numpart   & Hyphenated word part, letters and digits \\ \hline
+    10 & hword\_part      & Hyphenated word part, all letters      \\ \hline
+    11 & hword\_asciipart & Hyphenated word part, all ASCII        \\ \hline
+    12 & blank            & Space symbols                         \\ \hline
+    13 & tag              & XML tag                               \\ \hline
+    14 & protocol         & Protocol head                         \\ \hline
+    15 & numhword         & Hyphenated word, letters and digits    \\ \hline
+    16 & asciihword       & Hyphenated word, all ASCII             \\ \hline
+    17 & hword            & Hyphenated word, all letters           \\ \hline
+    18 & url\_path        & URL path                              \\ \hline
+    19 & file             & File or path name                     \\ \hline
+    20 & float            & Decimal notation                      \\ \hline
+    21 & int              & Signed integer                        \\ \hline
+    22 & uint             & Unsigned integer                      \\ \hline
+    23 & entity           & XML entity                            \\ \hline
+    \caption{Типы токенов, распознаваемые стандартным парсером}
+    \label{standard-token-types}
+\end{longtable}
+
+\noindent Каждый токен затем обрабатывается каким-то словарем или набором словарей.
+Если никакой словарь не подошел, то токен отбрасывается.
+
+\subsubsection{Словари}
+
+Словари играют одну из ключевых ролей в полнотекстовом поиске.
+\textit{Словарь} --- это программа, которая принимает на вход токен и возвращает массив лексем (в том числе и пустой) или \texttt{NULL}, если токен распознан как \textit{стоп-слово} (слово, которое не должно учитываться при поиске).
+
+\noindent В PostgreSQL предоставлены следующие шаблоны словарей:
+\begin{itemize}
+    \item{\textbf{ispell, myspell, hunspell}} --- морфологические словари, которые могут сводить множество разных лингвистических форм слова к одной лексеме;
+    \item{\textbf{snowball stemmer}} --- более общий морфологический словарь, предлагающий алгоритмы, которые для данного языка сводят распространенные словоформы к начальной форме;
+    \item{\textbf{thesaurus}} --- шаблон содержит набор слов и информацию о связях слов и словосочетаний, то есть более широкие понятия, более узкие понятия связанные понятия и т.п.;
+    \item{\textbf{synonym}} --- используется для создания словарей, заменяющих слова синонимами (не поддерживает словосочетания);
+    \item{\textbf{simple}} --- работа шаблона сводится к преобразованию входного фрагмента в нижний регистр и проверки результата по файлу со списком стоп-слов.
+\end{itemize}
+
+\noindent Команда, представленная в листинге~\ref{parser-dictionary}, позволяет посмотреть на работу парсера и словаря.
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Команда для просмотра работы парсера и словарей}
+    \label{parser-dictionary}
+    \begin{lstlisting}[style=codelistingstyle]
+    SELECT * FROM ts_debug('russian', 'Вечера на хуторе близ Диканьки');
+    \end{lstlisting}
+\end{algorithm}
+
+\noindent Результатом выполнения запроса является таблица~\ref{parse-and-normalize}.
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{description} & \textbf{tokens} & \textbf{dictionary} & \textbf{lexems} \\ \hline
+        Word, all letters      & Вечера        & russian\_stem & \{вечер\}    \\ \hline
+        Space symbols          & " "           & NULL          & NULL         \\ \hline
+        Word, all letters      & на            & russian\_stem & \{\}         \\ \hline
+        Space symbols          & " "           & NULL          & NULL         \\ \hline
+        Word, all letters      & хуторе        & russian\_stem & \{хутор\}    \\ \hline
+        Space symbols          & " "           & NULL          & NULL         \\ \hline
+        Word, all letters      & близ          & russian\_stem & \{близ\}     \\ \hline
+        Space symbols          & " "           & NULL          & NULL         \\ \hline
+        Word, all letters      & Диканьки      & russian\_stem & \{диканьк\}  \\ \hline
+    \end{tabular}
+    \caption{Результат разбора и нормализации предложения на русском языке}
+    \label{parse-and-normalize}
+\end{table}
+
+\subsubsection{Конфигурация}
+
+Конфигурация полнотекстового поиска определяет парсер, применяемый для разбора текста на токены, и механизм работы словарей для разбора токенов на лексемы.
+Команда, представленная в листинге~\ref{set-russian-config}, демонстрирует применяемую стандартную конфигурацию.
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Команда просмотра стандартной конфигурации}
+    \label{set-russian-config}
+    \begin{lstlisting}[style=codelistingstyle]
+    SHOW default_text_search_config;
+    \end{lstlisting}
+\end{algorithm}
+
+От конфигурации напрямую зависят результаты полнотекстового поиска.
+Такая настройка не представляет интерес в данной работе, поэтому в демонстрационных случаях будет использована стандартная конфигурация \texttt{pg\_catalog.russian}.
+
+\subsubsection{tsvector @@ tsquery}
+
+Полнотекстовый поиск в PostgreSQL реализован на базе оператора соответствия @@, который возвращает \texttt{true}, если \texttt{tsvector} (документ) соответствует \texttt{tsquery} (запросу).
+Порядок операндов не важен.
+Для разбора и нормализации текстового содержимого используется функция \texttt{to\_tsvector}. Ее работа продемонстрирована в листинге~\ref{to-tsvector-func}.
+Заметим, что слово \textbf{\enquote{никогда}} в результат не попало. Если необходимо, это можно исправить, изменив конфигурацию словаря.
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Использование функции \texttt{to\_tsvector}}
+    \label{to-tsvector-func}
+    \begin{lstlisting}[style=codelistingstyle]
+    SELECT to_tsvector('russian', 'Чайки, как вы знаете, не раздумывают во время полета и никогда не останавливаются.');
+
+    -[ RECORD 1 ]---------------------------------
+    to_tsvector | 'врем':8 'знает':4 'останавлива':13 'полет':9
+      'раздумыва':6 'чайк':1
+    \end{lstlisting}
+\end{algorithm}
+
+\noindent Также для работы полезны функции \texttt{to\_tsquery} и \texttt{plainto\_tsquery}, которые преобразуют текст запроса пользователя в необходимый формат, проводя нормализацию.
+Их работа показана в листингах~\ref{to-tsquery1-func},~\ref{to-tsquery2-func}~и~\ref{plainto-tsquery-func}.
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Использование функции \texttt{to\_tsquery} с оператором ИЛИ}
+    \label{to-tsquery1-func}
+    \begin{lstlisting}[style=codelistingstyle]
+    -- Обратите внимание на логический оператор ИЛИ
+
+    SELECT to_tsquery('russian', 'аналитические | системы');
+
+    -[ RECORD 1 ]---------------------------------
+    to_tsquery | 'аналитическ' & 'систем'
+    \end{lstlisting}
+\end{algorithm}
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Использование функции \texttt{to\_tsquery} с оператором И}
+    \label{to-tsquery2-func}
+    \begin{lstlisting}[style=codelistingstyle]
+    -- В данном случае тоже логический оператор И
+
+    SELECT to_tsquery('russian', 'аналитические & системы');
+
+    -[ RECORD 1 ]---------------------------------
+    to_tsquery | 'аналитическ' | 'систем'
+    \end{lstlisting}
+\end{algorithm}
+
+\begin{algorithm}[H]
+    \floatname{algorithm}{Листинг}
+    \caption{Использование функции \texttt{plainto\_tsquery} без операторов}
+    \label{plainto-tsquery-func}
+    \begin{lstlisting}[style=codelistingstyle]
+    -- А здесь чистый текст с пробелом между словами
+
+    SELECT plainto_tsquery('russian', 'аналитические  системы');
+
+    -[ RECORD 1 ]---------------------------------
+    plainto_tsquery | 'аналитическ' & 'систем'
+    \end{lstlisting}
+\end{algorithm}
+
+\noindent В листинге~\ref{simple-example} продемонстрирована работа простого соответствия текста и запроса.
+Обратите внимание, что в запросе \enquote{данн\textbf{ые}}, а в тексте документа \enquote{данн\textbf{ых}}.
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Пример простого соответствия запросу}
+    \label{simple-example}
+    \begin{lstlisting}[style=codelistingstyle]
+    SELECT
+        to_tsvector('russian', 'К. Дж. Дейт. Введение в системы баз данных')
+        @@
+        to_tsquery('russian', 'базы & данные');
+
+    -[ RECORD 1 ]---------------------------------
+    ?column? | true
+    \end{lstlisting}
+\end{algorithm}
+
+\subsubsection{Дополнительные возможности}
+
+Помимо простого соответствия текста с помощью оператора $@@$, PostgreSQL также предлагает ряд дополнительных возможностей обработки \texttt{tsvector} и \texttt{tsquery}.
+Далее представлены некоторые из них.
+\begin{itemize}
+    \item{\textbf{setweight}} --- назначение элементам \texttt{tsvector} или \texttt{tsquery} разных весов.
+          Обычно эта информация может использоваться при ранжировании результатов поиска или выборе только лексем с заданными весами.
+    \item{\textbf{ts\_rank}, \textbf{ts\_rank\_cd}} --- встроенные функции, применяемые для ранжирования результатов поиска и принимающие во внимание лексическую, позиционную и структурную информацию.
+    \item{\textbf{ts\_headline}} --- функция будет использовать запрос для выбора соответствующих фрагментов текста, а затем выделять все слова, которые встречаются в запросе.
+    \item{\textbf{логические операции над {tsvector} и tsquery}} --- например, \texttt{tsvesctor} $||$ \texttt{tsvector}.
+    \item{\textbf{<->}} --- оператор предшествования.
+    \item{\textbf{функция length}} --- возвращает число лексем, сохраненных в векторе.
+    \item{\textbf{функция strip}} --- возвращает вектор с теми же лексемами, что и в данном, но без информации о позиции и весе.
+\end{itemize}
+
+\noindent Более подробную информацию и демонстрацию применения этих функций можно найти в работе Плоскарёва Вадима, студента группы ТП.22Б07.
+
+В заключении раздела приведем статистику из демонстрационной базы данных, содержащей 21 произведение классической литературы.
+В листинге~\ref{simple-example-top10} демонстрируется запрос для выбора 10 наиболее часто встречающихся слов в коллекции документов.
+
+\begin{algorithm}
+    \floatname{algorithm}{Листинг}
+    \caption{Пример простого соответствия запросу}
+    \label{simple-example-top10}
+    \begin{lstlisting}[style=codelistingstyle]
+    SELECT * FROM ts_stat('SELECT ts_text FROM text_2024.classical_literature')
+    ORDER BY nentry DESC, ndoc DESC, word
+    LIMIT 10;
+\end{lstlisting}
+\end{algorithm}
+
+\noindent Результаты запроса представлены в таблице~\ref{tab:word_frequency}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Лексема} & \textbf{Кол-во документов} & \textbf{Кол-во вхождений} \\ \hline
+        эт & 21 & 1809 \\ \hline
+        сказа & 21 & 1613 \\ \hline
+        котор & 21 & 1128 \\ \hline
+        сво & 21 & 1033 \\ \hline
+        говор & 21 & 748 \\ \hline
+        рук & 20 & 705 \\ \hline
+        одн & 21 & 695 \\ \hline
+        так & 21 & 594 \\ \hline
+        мо & 21 & 593 \\ \hline
+        глаз & 21 & 571 \\ \hline
+    \end{tabular}
+    \caption{Частота лексем в коллекции документов}
+    \label{tab:word_frequency}
+\end{table}
