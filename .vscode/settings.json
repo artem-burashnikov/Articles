@@ -48,7 +48,8 @@
             "env": {}
         },
     ],
-    "latex-workshop.latexindent.args": [
+    "latex-workshop.formatting.latex": "latexindent",
+    "latex-workshop.formatting.latexindent.args": [
         "-l=%DIR%/.latexindent.yaml",
         "-m",
         "-c",
