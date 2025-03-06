@@ -1,5 +1,5 @@
 name: Build bfs report
-on: [push]
+on: [push, pull_request]
 jobs:
   build_latex:
     runs-on: ubuntu-latest
@@ -9,7 +9,7 @@ jobs:
 
 
       - name: Set up Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - run: |
           cd 2023/bfs/report
@@ -19,7 +19,7 @@ jobs:
           make
 
       - name: Upload PDF file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: PDF
           path: 2023/bfs/report/burashnikov_bfs.pdf
