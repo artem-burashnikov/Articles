@@ -7,16 +7,18 @@ jobs:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.7.0
 
-
       - name: Set up Git repository
         uses: actions/checkout@v3
 
+      - name: Install dependencies
       - run: |
-          cd 2023/depinspect/report
+          cd 2023/bfs/report
           sudo apt-get update
           sudo apt install inkscape
           make depext-deb
-          make
+
+      - name: Build document
+      - run: make
 
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
