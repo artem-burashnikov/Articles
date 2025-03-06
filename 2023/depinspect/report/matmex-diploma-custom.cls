@@ -5,39 +5,39 @@
 
 % Если используется опция 14pt то нужно несколько хаков
 \DeclareOption{14pt}{
-  \def\ignore#1{}
-  % во-первых, класс наследуется от extarticle
-  \def\my@fontsize{14pt}
-  \def\my@baseclass{extarticle}
+	\def\ignore#1{}
+	% во-первых, класс наследуется от extarticle
+	\def\my@fontsize{14pt}
+	\def\my@baseclass{extarticle}
 
-  % во-вторых, титульный лист должен набираться так, как будто
-  % используется шрифт 12pt - иначе он выглядит совсем конским
-  % Для этого мы явно загружаем size12.clo, но так как он на такое не рассчитан,
-  % и использует \newcommand для определения всяких \small и \Large
-  % то у нас \newcommand временно превращается в \renewcommand
-  \let\orignewcommand\newcommand
-  \let\origNeedsTeXFormat\NeedsTeXFormat
-  \def\my@title12pt{
-    \let\newcommand\renewcommand
-    \makeatletter
-    \input{size12.clo}%
-    \makeatother
-    \let\newcommand\orignewcommand
-  }
-  % в-третьих, после того как титульный лист сгенерирован, нужно снова вернуться
-  % к базовому шрифту 14pt. Применяется такой же хак: загрузи size14.clo
-  % временно переопределив \newcommand => \renewcommand
-  \def\my@body14pt{
-    % отдельное внимание подавлению команды \NeedsTeXFormat, которая требует
-    % чтобы код size14.clo выполнялся в преамбуле (а тут он уже внутри документа)
-    \let\NeedsTeXFormat\ignore
-    \let\newcommand\renewcommand
-    \makeatletter
-    \input{size14.clo}%
-    \makeatother
-    \let\newcommand\orignewcommand
-    \let\NeedsTeXFormat\origNeedsTeXFormat
-  }
+	% во-вторых, титульный лист должен набираться так, как будто
+	% используется шрифт 12pt - иначе он выглядит совсем конским
+	% Для этого мы явно загружаем size12.clo, но так как он на такое не рассчитан,
+	% и использует \newcommand для определения всяких \small и \Large
+	% то у нас \newcommand временно превращается в \renewcommand
+	\let\orignewcommand\newcommand
+	\let\origNeedsTeXFormat\NeedsTeXFormat
+	\def\my@title12pt{
+		\let\newcommand\renewcommand
+		\makeatletter
+		\input{size12.clo}%
+		\makeatother
+		\let\newcommand\orignewcommand
+	}
+	% в-третьих, после того как титульный лист сгенерирован, нужно снова вернуться
+	% к базовому шрифту 14pt. Применяется такой же хак: загрузи size14.clo
+	% временно переопределив \newcommand => \renewcommand
+	\def\my@body14pt{
+		% отдельное внимание подавлению команды \NeedsTeXFormat, которая требует
+		% чтобы код size14.clo выполнялся в преамбуле (а тут он уже внутри документа)
+		\let\NeedsTeXFormat\ignore
+		\let\newcommand\renewcommand
+		\makeatletter
+		\input{size14.clo}%
+		\makeatother
+		\let\newcommand\orignewcommand
+		\let\NeedsTeXFormat\origNeedsTeXFormat
+	}
 }
 \ProcessOptions\relax
 \LoadClass[a4paper,\my@fontsize]{\my@baseclass}
@@ -55,18 +55,18 @@
 \usepackage{iftex}
 \ifXeTeX
 \else
-\ifLuaTeX
-\else
-    %% https://github.com/latex3/iftex/blob/a36f09ed85c47dfd8ab59ae2cc0a8c9fb99c73e1/iftex.sty#L44
-    \newlinechar 64\relax
-    \errorcontextlines -1\relax
-    \immediate\write20{@
-        ***********************************************************@
-        * XeLaTex or LuaLaTex is required to compile this document.@
-        * Sorry!@
-        ***********************************************************}%
-    \batchmode\read -1 to \@tempa
-\fi
+	\ifLuaTeX
+	\else
+		%% https://github.com/latex3/iftex/blob/a36f09ed85c47dfd8ab59ae2cc0a8c9fb99c73e1/iftex.sty#L44
+		\newlinechar 64\relax
+		\errorcontextlines -1\relax
+		\immediate\write20{@
+			***********************************************************@
+			* XeLaTex or LuaLaTex is required to compile this document.@
+			* Sorry!@
+			***********************************************************}%
+		\batchmode\read -1 to \@tempa
+	\fi
 \fi
 
 %% Для русификации достаточно подключить пакет fontspec и
@@ -119,30 +119,30 @@
 \renewcommand\lstlistlistingname{Листинги}
 % Отступ перед подписью листинга
 \DeclareCaptionFormat{listing}{
-    \hspace{15pt}#1#2#3
+	\hspace{15pt}#1#2#3
 }
 \captionsetup[lstlisting]{
-  format=listing,
-  margin=0pt,
-  font={bf}
+	format=listing,
+	margin=0pt,
+	font={bf}
 }
 \lstset{
-mathescape=true,
-identifierstyle=\ttfamily,
-keywordstyle=\bfseries,
-commentstyle=\scriptsize\rmfamily,
-basewidth={0.5em,0.5em},
-fontadjust=true,
+	mathescape=true,
+	identifierstyle=\ttfamily,
+	keywordstyle=\bfseries,
+	commentstyle=\scriptsize\rmfamily,
+	basewidth={0.5em,0.5em},
+	fontadjust=true,
 }
-\usepackage[kpsewhich,newfloat]{minted}
-\usemintedstyle{bw}
-\SetupFloatingEnvironment{listing}{name=Листинг}
-\SetupFloatingEnvironment{listing}{listname=Листинги}
-\captionsetup[listing]{
-  format=listing,
-  margin=0pt,
-  font={bf}
-}
+% \usepackage[kpsewhich,newfloat]{minted}
+% \usemintedstyle{bw}
+% \SetupFloatingEnvironment{listing}{name=Листинг}
+% \SetupFloatingEnvironment{listing}{listname=Листинги}
+% \captionsetup[listing]{
+%   format=listing,
+%   margin=0pt,
+%   font={bf}
+% }
 
 %% Текст
 \usepackage[inline]{enumitem} % Настройка списков, а так же "строчные" списки
@@ -173,10 +173,10 @@ fontadjust=true,
 }
 
 \fancypagestyle{withCompileDate}{%
-  \fancyhf{}
-  \fancyfoot[C]{\thepage}
-  \fancyfoot[R]{\small Дата сборки: \today}
-  \renewcommand{\headrulewidth}{0pt}
+	\fancyhf{}
+	\fancyfoot[C]{\thepage}
+	\fancyfoot[R]{\small Дата сборки: \today}
+	\renewcommand{\headrulewidth}{0pt}
 }
 
 %% Гиперссылки
@@ -194,7 +194,7 @@ fontadjust=true,
 \underline{\hspace{3cm}}\\[-0.2em]
 {\footnotesize #2}
 \def\sigspace{\\[1em]%
-\def\sigspace{\\[3em]}}
+	\def\sigspace{\\[3em]}}
 }
 
 %% Параметры заполнения титульного листа
@@ -237,274 +237,274 @@ fontadjust=true,
 \define@choicekey*[en]{mytitle}{kind}{solution,experiment,production,comparison,theoretical}{\def\my@title@kind@en{#1}}
 
 \newcommand{\filltitle}[2]{
-%% Значения по умолчанию для обоих языков
-    \ifthenelse{\equal{#1}{ru}}
-        {
-        \presetkeys[#1]{mytitle}{
-            year = {\the\year},
-            type = {practice},
-            reviewer = {},
-            consultant = {},
-            profile = {}
-        }{}
-        }
-        {}
-    \ifthenelse{\equal{#1}{en}}
-        {
-        \presetkeys[#1]{mytitle}{
-            year = {\the\year},
-            type = {practice},
-            reviewer = {},
-            consultant = {},
-            profile = {}
-        }{}
-        }
-        {}
-    \setkeys[#1]{mytitle}{#2}
+	%% Значения по умолчанию для обоих языков
+	\ifthenelse{\equal{#1}{ru}}
+	{
+		\presetkeys[#1]{mytitle}{
+			year = {\the\year},
+			type = {practice},
+			reviewer = {},
+			consultant = {},
+			profile = {}
+		}{}
+	}
+	{}
+	\ifthenelse{\equal{#1}{en}}
+	{
+		\presetkeys[#1]{mytitle}{
+			year = {\the\year},
+			type = {practice},
+			reviewer = {},
+			consultant = {},
+			profile = {}
+		}{}
+	}
+	{}
+	\setkeys[#1]{mytitle}{#2}
 }
 
 %% Титульная страница на русском языке
 \newcommand\maketitleru{
-\fancypagestyle{titleru}{
-    \fancyhf{}  % clear all header and footer fields
-    \renewcommand{\headrulewidth}{0pt}  % remove head ruler
-    % В верхнем колонтитуле будет университет, кафедра и группа, если это курсовая/практика, или просто университет для ВКР
-    \chead{\large
-      Санкт-Петербургский государственный университет
-      \vskip 1em
-      \ifthenelse{\equal{\my@title@type@ru}{bachelor} \OR \equal{\my@title@type@ru}{master}}
-      {}
-      {
-        {\large \my@title@chair@ru }
-        \vskip 1em
-        {\large Группа \my@title@group@ru }
-      }
-    }
-    % В нижнем колонтитуле город и год
-    \cfoot{\large\parbox[b]{\textwidth}{\centering Санкт-Петербург\\ \my@title@year@ru}}
-}
+	\fancypagestyle{titleru}{
+		\fancyhf{}  % clear all header and footer fields
+		\renewcommand{\headrulewidth}{0pt}  % remove head ruler
+		% В верхнем колонтитуле будет университет, кафедра и группа, если это курсовая/практика, или просто университет для ВКР
+		\chead{\large
+			Санкт-Петербургский государственный университет
+			\vskip 1em
+			\ifthenelse{\equal{\my@title@type@ru}{bachelor} \OR \equal{\my@title@type@ru}{master}}
+			{}
+			{
+				{\large \my@title@chair@ru }
+				\vskip 1em
+					{\large Группа \my@title@group@ru }
+			}
+		}
+		% В нижнем колонтитуле город и год
+		\cfoot{\large\parbox[b]{\textwidth}{\centering Санкт-Петербург\\ \my@title@year@ru}}
+	}
 
-\title{\my@title@title@ru}
-\begin{titlepage}
-\newgeometry{top=20mm,bottom=20mm,left=20mm,right=15mm,nohead,includeheadfoot}
-\thispagestyle{titleru}
-\begin{center}
+	\title{\my@title@title@ru}
+	\begin{titlepage}
+		\newgeometry{top=20mm,bottom=20mm,left=20mm,right=15mm,nohead,includeheadfoot}
+		\thispagestyle{titleru}
+		\begin{center}
 
-    \vspace*{0.25\textheight}
+			\vspace*{0.25\textheight}
 
-    \ifthenelse{\equal{\my@title@type@ru}{coursework} \OR \equal{\my@title@type@ru}{practice} \OR \equal{\my@title@type@ru}{prediploma} \OR \equal{\my@title@type@ru}{prediploma}}
-    {
-        {\Huge \@title}
-        \vskip 2em
-        {\Large\textbf{\textit{\my@title@author@ru}}}
-        \vskip 1em
-        {\large
-            \ifthenelse{\equal{\my@title@type@ru}{production}}
-                {Отчёт по производственной практике}
-                {\ifthenelse{\equal{\my@title@type@ru}{coursework}}
-                    {Отчёт по курсовой работе}
-                    {\ifthenelse{\equal{\my@title@type@ru}{practice}}
-                        {Отчёт по учебной практике}
-                        {Отчёт по преддипломной практике}
-                    }
-                }\\
-            \ifthenelse{\equal{\my@title@kind@ru}{solution}}
-                {в форме <<Решение>>}
-                {\ifthenelse{\equal{\my@title@kind@ru}{experiment}}
-                    {в форме <<Эксперимент>>}
-                    {\ifthenelse{\equal{\my@title@kind@ru}{production}}
-                        {в форме <<Производственное задание>>}
-                        {\ifthenelse{\equal{\my@title@kind@ru}{comparison}}
-                            {в форме <<Сравнение>>}
-                            {в форме <<Теоретическое исследование>>}
-                        }
-                    }
-                }
-        }\\
-        {\normalsize \raggedleft
-            \vskip 5em
-            Научный руководитель:\\
-            \my@title@supervisorPosition@ru\ \my@title@supervisor@ru\\
-            \ifthenelse{\equal{\my@title@consultant@ru}{}}
-            {}
-            {
-                 \ifthenelse{\equal{\my@title@consultant@ru}{\my@title@supervisor@ru}}
-                 {\PackageError{matmex-diploma-custom}{Косультант и научник не могут быть одним и тем же физическим лицом. Скорее всего у Вас нет консультанта, и его указывать не нужно}{}}
-                 {
-                   \vskip 1em
-                   Консультант:\\
-                   \my@title@consultantPosition@ru\ \my@title@consultant@ru\\
-                 }
-            }
-        }
-    }
-    {
-        {\Large\textbf{\textit{\my@title@author@ru}}}
-        \vskip 1em
-        {\large Выпускная квалификационная работа}
-        \vskip 1em
-        {\Huge \@title}
+			\ifthenelse{\equal{\my@title@type@ru}{coursework} \OR \equal{\my@title@type@ru}{practice} \OR \equal{\my@title@type@ru}{prediploma} \OR \equal{\my@title@type@ru}{prediploma}}
+			{
+			{\Huge \@title}
+			\vskip 2em
+				{\Large\textbf{\textit{\my@title@author@ru}}}
+			\vskip 1em
+				{\large
+					\ifthenelse{\equal{\my@title@type@ru}{production}}
+					{Отчёт по производственной практике}
+					{\ifthenelse{\equal{\my@title@type@ru}{coursework}}
+						{Отчёт по курсовой работе}
+						{\ifthenelse{\equal{\my@title@type@ru}{practice}}
+							{Отчёт по учебной практике}
+							{Отчёт по преддипломной практике}
+						}
+					}\\
+					\ifthenelse{\equal{\my@title@kind@ru}{solution}}
+					{в форме <<Решение>>}
+					{\ifthenelse{\equal{\my@title@kind@ru}{experiment}}
+						{в форме <<Эксперимент>>}
+						{\ifthenelse{\equal{\my@title@kind@ru}{production}}
+							{в форме <<Производственное задание>>}
+							{\ifthenelse{\equal{\my@title@kind@ru}{comparison}}
+								{в форме <<Сравнение>>}
+								{в форме <<Теоретическое исследование>>}
+							}
+						}
+					}
+				}\\
+			{\normalsize \raggedleft
+			\vskip 5em
+			Научный руководитель:\\
+			\my@title@supervisorPosition@ru\ \my@title@supervisor@ru\\
+			\ifthenelse{\equal{\my@title@consultant@ru}{}}
+			{}
+			{
+				\ifthenelse{\equal{\my@title@consultant@ru}{\my@title@supervisor@ru}}
+				{\PackageError{matmex-diploma-custom}{Косультант и научник не могут быть одним и тем же физическим лицом. Скорее всего у Вас нет консультанта, и его указывать не нужно}{}}
+				{
+					\vskip 1em
+					Консультант:\\
+					\my@title@consultantPosition@ru\ \my@title@consultant@ru\\
+				}
+			}
+			}
+			}
+			{
+			{\Large\textbf{\textit{\my@title@author@ru}}}
+			\vskip 1em
+				{\large Выпускная квалификационная работа}
+			\vskip 1em
+				{\Huge \@title}
 
-        \vskip 2em
-        Уровень образования: \ifthenelse{\equal{\my@title@type@ru}{master}}{магистратура}{бакалавриат}
+			\vskip 2em
+			Уровень образования: \ifthenelse{\equal{\my@title@type@ru}{master}}{магистратура}{бакалавриат}
 
-        \vskip 1em
+			\vskip 1em
 
-        Направление \textit{\my@title@specialty@ru}
+			Направление \textit{\my@title@specialty@ru}
 
-        \vskip 1em
+			\vskip 1em
 
-        Основная образовательная программа \textit{\my@title@programme@ru}
+			Основная образовательная программа \textit{\my@title@programme@ru}
 
-        \vskip 1em
+			\vskip 1em
 
-        \ifthenelse{\equal{\my@title@profile@ru}{}}{}{Профиль \underline{\textit{\my@title@profile@ru}}}
+			\ifthenelse{\equal{\my@title@profile@ru}{}}{}{Профиль \underline{\textit{\my@title@profile@ru}}}
 
-        {\normalsize \raggedleft
-            \vskip 5em
-            Научный руководитель:\\
-            \my@title@supervisorPosition@ru\ \my@title@supervisor@ru\\
-            \vskip 1em
-            Рецензент:\\
-            \my@title@reviewerPosition@ru\ \my@title@reviewer@ru\\
-        }
-    }
-\end{center}
-\end{titlepage}
+			{\normalsize \raggedleft
+				\vskip 5em
+				Научный руководитель:\\
+				\my@title@supervisorPosition@ru\ \my@title@supervisor@ru\\
+				\vskip 1em
+				Рецензент:\\
+				\my@title@reviewerPosition@ru\ \my@title@reviewer@ru\\
+			}
+			}
+		\end{center}
+	\end{titlepage}
 }
 
 % Титульная страница на английском языке
 \newcommand\maketitleen{
-\fancypagestyle{titleen}{
-    \fancyhf{}  % clear all header and footer fields
-    \renewcommand{\headrulewidth}{0pt}  % remove head ruler
-    %% В верхнем колонтитуле будет университет, кафедра и группа, если это курсовая/практика, или просто университет для ВКР
-    \chead{\large
-    Saint Petersburg State University
-    \vskip 1em
-    \ifthenelse{\equal{\my@title@type@en}{bachelor} \OR \equal{\my@title@type@en}{master}}
-    {}
-    {
-      {\large \my@title@chair@en }
-      \vskip 1em
-      {\large Group \my@title@group@en }
-    }
-  }
-    %% В нижнем колонтитуле город и год
-    \cfoot{\large\parbox[b]{\textwidth}{\centering Saint Petersburg\\ \my@title@year@en}}
-}
-\title{\my@title@title@en}
-\begin{titlepage}%
-\newgeometry{top=20mm,bottom=20mm,left=20mm,right=15mm,nohead,includeheadfoot}
-\thispagestyle{titleen}
-    \begin{center}
+	\fancypagestyle{titleen}{
+		\fancyhf{}  % clear all header and footer fields
+		\renewcommand{\headrulewidth}{0pt}  % remove head ruler
+		%% В верхнем колонтитуле будет университет, кафедра и группа, если это курсовая/практика, или просто университет для ВКР
+		\chead{\large
+			Saint Petersburg State University
+			\vskip 1em
+			\ifthenelse{\equal{\my@title@type@en}{bachelor} \OR \equal{\my@title@type@en}{master}}
+			{}
+			{
+				{\large \my@title@chair@en }
+				\vskip 1em
+					{\large Group \my@title@group@en }
+			}
+		}
+		%% В нижнем колонтитуле город и год
+		\cfoot{\large\parbox[b]{\textwidth}{\centering Saint Petersburg\\ \my@title@year@en}}
+	}
+	\title{\my@title@title@en}
+	\begin{titlepage}%
+		\newgeometry{top=20mm,bottom=20mm,left=20mm,right=15mm,nohead,includeheadfoot}
+		\thispagestyle{titleen}
+		\begin{center}
 
-        \vspace*{0.25\textheight}
+			\vspace*{0.25\textheight}
 
-        \ifthenelse{\equal{\my@title@type@en}{coursework} \OR \equal{\my@title@type@en}{practice} \OR \equal{\my@title@type@en}{prediploma}}
-        {
-            {\Large\textbf{\textit{\my@title@author@en}}}
-            \vskip 2em
-            {\Huge \@title}
-            \vskip 1em
-            {\large
-                \ifthenelse{\equal{\my@title@type@en}{coursework}}
-                {Coursework}
-                {\ifthenelse{\equal{\my@title@type@en}{practice}}
-                    {Internship report}
-                    {Pre-Diploma practice report}
-                }\\
-                \ifthenelse{\equal{\my@title@kind@en}{solution}}
-                {in a <<Solution>> form}
-                {\ifthenelse{\equal{\my@title@kind@en}{experiment}}
-                    {in an <<Experiment>> form}
-                    {\ifthenelse{\equal{\my@title@kind@en}{production}}
-                        {in a <<Production>> form}
-                        {\ifthenelse{\equal{\my@title@kind@en}{comparison}}
-                            {in a <<Comparison>> form}
-                            {in a <<Theoretical research>> form}
-                        }
-                    }
-                }
+			\ifthenelse{\equal{\my@title@type@en}{coursework} \OR \equal{\my@title@type@en}{practice} \OR \equal{\my@title@type@en}{prediploma}}
+			{
+			{\Large\textbf{\textit{\my@title@author@en}}}
+			\vskip 2em
+				{\Huge \@title}
+			\vskip 1em
+				{\large
+					\ifthenelse{\equal{\my@title@type@en}{coursework}}
+					{Coursework}
+					{\ifthenelse{\equal{\my@title@type@en}{practice}}
+						{Internship report}
+						{Pre-Diploma practice report}
+					}\\
+					\ifthenelse{\equal{\my@title@kind@en}{solution}}
+					{in a <<Solution>> form}
+					{\ifthenelse{\equal{\my@title@kind@en}{experiment}}
+						{in an <<Experiment>> form}
+						{\ifthenelse{\equal{\my@title@kind@en}{production}}
+							{in a <<Production>> form}
+							{\ifthenelse{\equal{\my@title@kind@en}{comparison}}
+								{in a <<Comparison>> form}
+								{in a <<Theoretical research>> form}
+							}
+						}
+					}
 
-            }\\
-            {\normalsize \raggedleft
-                \vskip 5em
-                Scientific supervisor:\\
-                \my@title@supervisorPosition@en\ \my@title@supervisor@en\\
-                \ifthenelse{\equal{\my@title@consultant@en}{}}
-                {}
-                {
-                    \vskip 1em
-                    Consultant:\\
-                    \my@title@consultantPosition@en\ \my@title@consultant@en\\
-                }
-            }
-        }
-        {
-            {\Large\textbf{\textit{\my@title@author@en}}}
-            \vskip 1em
-            {\large \ifthenelse{\equal{\my@title@type@en}{master}}{Master's Thesis}{Bachelor's Thesis}}
-            \vskip 1em
-            {\Huge \@title}
+				}\\
+			{\normalsize \raggedleft
+			\vskip 5em
+			Scientific supervisor:\\
+			\my@title@supervisorPosition@en\ \my@title@supervisor@en\\
+			\ifthenelse{\equal{\my@title@consultant@en}{}}
+			{}
+			{
+				\vskip 1em
+				Consultant:\\
+				\my@title@consultantPosition@en\ \my@title@consultant@en\\
+			}
+			}
+			}
+			{
+			{\Large\textbf{\textit{\my@title@author@en}}}
+			\vskip 1em
+				{\large \ifthenelse{\equal{\my@title@type@en}{master}}{Master's Thesis}{Bachelor's Thesis}}
+			\vskip 1em
+				{\Huge \@title}
 
-            \vskip 2em
-            Education level: \ifthenelse{\equal{\my@title@type@en}{master}}{master}{bachelor}
+			\vskip 2em
+			Education level: \ifthenelse{\equal{\my@title@type@en}{master}}{master}{bachelor}
 
-            \vskip 1em
+			\vskip 1em
 
-            Speciality \textit{\my@title@specialty@en}
+			Speciality \textit{\my@title@specialty@en}
 
-            \vskip 1em
+			\vskip 1em
 
-            Programme \textit{\my@title@programme@en}
+			Programme \textit{\my@title@programme@en}
 
-            \vskip 1em
+			\vskip 1em
 
-            \ifthenelse{\equal{\my@title@profile@en}{}}{}{Profile: \underline{\textit{\my@title@profile@en}}}
+			\ifthenelse{\equal{\my@title@profile@en}{}}{}{Profile: \underline{\textit{\my@title@profile@en}}}
 
-            {\normalsize \raggedleft
-                \vskip 5em
-                Scientific supervisor:\\
-                \my@title@supervisorPosition@en\ \my@title@supervisor@en\\
-                \vskip 1em
-                Reviewer:\\
-                \my@title@reviewerPosition@en\ \my@title@reviewer@en\\
-            }
-        }
-    \end{center}
-\end{titlepage}
+			{\normalsize \raggedleft
+				\vskip 5em
+				Scientific supervisor:\\
+				\my@title@supervisorPosition@en\ \my@title@supervisor@en\\
+				\vskip 1em
+				Reviewer:\\
+				\my@title@reviewerPosition@en\ \my@title@reviewer@en\\
+			}
+			}
+		\end{center}
+	\end{titlepage}
 }
 
 %% Титульный лист генерируется, если для соответствующего языка
 %% определен аргумент title
 %% Счетчик страниц автоматически увеличивается при генерации титульнго листа
 \renewcommand\maketitle{
-%% На титульной странице все кроме полей соответствует \documentclass[12pt]{article}
-\my@title12pt
-\newcounter{titlepages}
-\setcounter{titlepages}{1}
-\begin{spacing}{1.0}
-\ifthenelse{\isundefined{\my@title@title@ru}}{}{
-  % fancyhdr set height of the top/bottom headers automatically
-  % so set them to zero to be sure that he does it
-  \setlength{\headheight}{0pt}
-  \setlength{\footskip}{0pt}
-  \maketitleru\addtocounter{titlepages}{1}
-}
-\ifthenelse{\isundefined{\my@title@title@en}}{}{
-  % fancyhdr already set height of the top/bottom headers on the previous page (titleru)
-  % but on this page the headers' height might be different
-  % so set them to zero again in order to make fancyhdr to do it
-  \setlength{\headheight}{0pt}
-  \setlength{\footskip}{0pt}
-  \maketitleen\addtocounter{titlepages}{1}
-}
-\end{spacing}
-\setcounter{page}{\value{titlepages}}
-% restore preamble's geometry
-\my@body14pt
-\newgeometry{top=20mm,bottom=20mm,left=30mm,right=15mm,nohead,includeheadfoot}
+	%% На титульной странице все кроме полей соответствует \documentclass[12pt]{article}
+	\my@title12pt
+	\newcounter{titlepages}
+	\setcounter{titlepages}{1}
+	\begin{spacing}{1.0}
+		\ifthenelse{\isundefined{\my@title@title@ru}}{}{
+			% fancyhdr set height of the top/bottom headers automatically
+			% so set them to zero to be sure that he does it
+			\setlength{\headheight}{0pt}
+			\setlength{\footskip}{0pt}
+			\maketitleru\addtocounter{titlepages}{1}
+		}
+		\ifthenelse{\isundefined{\my@title@title@en}}{}{
+			% fancyhdr already set height of the top/bottom headers on the previous page (titleru)
+			% but on this page the headers' height might be different
+			% so set them to zero again in order to make fancyhdr to do it
+			\setlength{\headheight}{0pt}
+			\setlength{\footskip}{0pt}
+			\maketitleen\addtocounter{titlepages}{1}
+		}
+	\end{spacing}
+	\setcounter{page}{\value{titlepages}}
+	% restore preamble's geometry
+	\my@body14pt
+	\newgeometry{top=20mm,bottom=20mm,left=30mm,right=15mm,nohead,includeheadfoot}
 }
 
 %% Каждая глава начинается с новой страницы, введение и заключение не
@@ -512,9 +512,9 @@ fontadjust=true,
 \let\old@section\section
 \def\section{\@ifstar\@section\@@section}
 \def\@section#1{\newpage\old@section*{#1}%
-        \ifthenelse{\equal{#1}{\contentsname}}%
-           {}%
-           {\addcontentsline{toc}{section}{#1}}%
+	\ifthenelse{\equal{#1}{\contentsname}}%
+	{}%
+	{\addcontentsline{toc}{section}{#1}}%
 }
 \def\@@section#1{\newpage\old@section{#1}}
 

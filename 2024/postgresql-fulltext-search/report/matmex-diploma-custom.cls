@@ -135,20 +135,20 @@
     fontadjust=true,
 }
 
-% Требует Python с пакетом pygmentize, зато позволяет верстать очень годные листинги с синтаксической подсветкой
-\usepackage[kpsewhich,newfloat]{minted}
+% % Требует Python с пакетом pygmentize, зато позволяет верстать очень годные листинги с синтаксической подсветкой
+% \usepackage[kpsewhich,newfloat]{minted}
 
-% Запретим minted подсвечивать по его мнению лексические ошибки
-\AtBeginEnvironment{minted}{\dontdofcolorbox}
-\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+% % Запретим minted подсвечивать по его мнению лексические ошибки
+% \AtBeginEnvironment{minted}{\dontdofcolorbox}
+% \def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
 
-\SetupFloatingEnvironment{listing}{name=Листинг}
-\SetupFloatingEnvironment{listing}{listname=Листинги}
-\captionsetup[listing]{
-    format=listing,
-    margin=0pt,
-    font={bf}
-}
+% \SetupFloatingEnvironment{listing}{name=Листинг}
+% \SetupFloatingEnvironment{listing}{listname=Листинги}
+% \captionsetup[listing]{
+%     format=listing,
+%     margin=0pt,
+%     font={bf}
+% }
 
 %% Текст
 \usepackage[inline]{enumitem} % Настройка списков, а так же "строчные" списки
